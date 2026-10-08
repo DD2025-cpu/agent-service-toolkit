@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "default_model": "baseline_xgb",
+  "artifacts": {
+    "baseline_xgb": "wind_irr_baseline_v2.metadata.json",
+    "tuned_xgb": "wind_irr_tuned_v2.metadata.json"
+  }
+}

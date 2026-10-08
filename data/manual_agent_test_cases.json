@@ -1,0 +1,106 @@
+{
+  "dataset_name": "OilWind-Agent手动验收虚构数据",
+  "data_classification": "synthetic_test_data",
+  "notice": "全部项目和数值均为虚构，仅用于软件验收，不得作为论文实证样本或真实投资依据。",
+  "currency": "CNY",
+  "ratio_format": "decimal",
+  "projects": {
+    "华北陆上风电A": {
+      "project_id": "华北陆上风电A",
+      "province": "河北（虚构）",
+      "installed_capacity_mw": 50,
+      "unit_capex_yuan_per_kw": 5200,
+      "full_load_hours_per_year": 2400,
+      "tariff_yuan_per_kwh": 0.35,
+      "opex_ratio": 0.03
+    },
+    "沿海陆上风电B": {
+      "project_id": "沿海陆上风电B",
+      "province": "山东（虚构）",
+      "installed_capacity_mw": 80,
+      "unit_capex_yuan_per_kw": 5800,
+      "full_load_hours_per_year": 2800,
+      "tariff_yuan_per_kwh": 0.42,
+      "opex_ratio": 0.025
+    },
+    "高成本压力项目C": {
+      "project_id": "高成本压力项目C",
+      "province": "内蒙古（虚构）",
+      "installed_capacity_mw": 100,
+      "total_investment_yuan": 700000000,
+      "full_load_hours_per_year": 1900,
+      "tariff_yuan_per_kwh": 0.28,
+      "opex_ratio": 0.045
+    },
+    "碳收益研究项目D": {
+      "project_id": "碳收益研究项目D",
+      "province": "吉林（虚构）",
+      "installed_capacity_mw": 60,
+      "unit_capex_yuan_per_kw": 6000,
+      "full_load_hours_per_year": 2600,
+      "tariff_yuan_per_kwh": 0.38,
+      "opex_ratio": 0.028,
+      "carbon_price_yuan_per_ton": 80,
+      "emission_reduction_t_per_mwh": 0.5
+    }
+  },
+  "manual_cases": [
+    {
+      "id": "T01",
+      "name": "公式经济指标",
+      "prompt": "华北陆上风电A是一个虚构项目：装机容量50MW，单位投资5200元/kW，年利用小时2400小时，上网电价0.35元/kWh，OPEX率0.03。请计算公式IRR、NPV、静态和动态回收期、LCOE。",
+      "expected_tools": ["validate_project_parameters", "calculate_economic_metrics"],
+      "expected_behavior": "明确称为公式计算IRR；IRR约9.24%，并列出默认假设。"
+    },
+    {
+      "id": "T02",
+      "name": "模型预测",
+      "prompt": "使用已保存的XGBoost模型预测华北陆上风电A的IRR，并说明模型版本。参数：50MW、单位投资5200元/kW、2400小时、0.35元/kWh、OPEX率0.03。",
+      "expected_tools": ["validate_project_parameters", "predict_irr"],
+      "expected_behavior": "明确称为模型预测IRR；预测值约5.63%，并给出人民币口径代理数据集适用范围说明。"
+    },
+    {
+      "id": "T03",
+      "name": "SHAP解释",
+      "prompt": "解释华北陆上风电A的模型预测为什么是这个结果，给出SHAP贡献和各特征影响方向。参数：50MW、单位投资5200元/kW、2400小时、0.35元/kWh、OPEX率0.03。",
+      "expected_tools": ["validate_project_parameters", "explain_irr_prediction"],
+      "expected_behavior": "返回五个特征的SHAP贡献，并说明模型关系不代表因果关系。"
+    },
+    {
+      "id": "T04",
+      "name": "情景分析",
+      "prompt": "对华北陆上风电A运行悲观、基准和乐观情景，并比较各情景的IRR、NPV和LCOE。参数：50MW、单位投资5200元/kW、2400小时、0.35元/kWh、OPEX率0.03。",
+      "expected_tools": ["validate_project_parameters", "simulate_scenarios"],
+      "expected_behavior": "执行pessimistic、baseline、optimistic，明确结果为模拟数据。"
+    },
+    {
+      "id": "T05",
+      "name": "项目比较",
+      "prompt": "比较两个虚构项目。A：50MW、单位投资5200元/kW、2400小时、0.35元/kWh、OPEX率0.03。B：80MW、单位投资5800元/kW、2800小时、0.42元/kWh、OPEX率0.025。请给出排序依据。",
+      "expected_tools": ["validate_project_parameters", "compare_wind_projects"],
+      "expected_behavior": "分别保留A和B，按公式计算IRR排序，同时区分模型预测IRR。"
+    },
+    {
+      "id": "T06",
+      "name": "缺少参数后继续",
+      "prompt": "我有一个50MW的风电项目，请帮我计算IRR。",
+      "follow_up_prompt": "补充：单位投资5200元/kW，年利用小时2400小时，上网电价0.35元/kWh，OPEX率0.03。",
+      "expected_tools": ["validate_project_parameters", "calculate_economic_metrics"],
+      "expected_behavior": "第一轮暂停并追问；必须在同一聊天中发送补充信息，第二轮继续计算。"
+    },
+    {
+      "id": "T07",
+      "name": "非法单位和异常值",
+      "prompt": "项目装机容量50000kW，单位投资5200元/kW，年利用小时2400小时，电价1500元/kWh，OPEX率填3，请直接计算IRR。",
+      "expected_tools": ["validate_project_parameters"],
+      "expected_behavior": "阻止经济计算，指出人民币电价和比例单位问题，不得给出IRR。"
+    },
+    {
+      "id": "T08",
+      "name": "完整项目评价",
+      "prompt": "请对虚构的碳收益研究项目D做完整评价并保存报告：60MW、单位投资6000元/kW、2600小时、0.38元/kWh、OPEX率0.028、碳价80元/吨、单位减排量0.5吨/MWh。",
+      "expected_tools": ["validate_project_parameters", "generate_wind_project_report"],
+      "expected_behavior": "报告包含公式指标、模型预测、SHAP和情景分析，并保存Markdown文件。"
+    }
+  ]
+}

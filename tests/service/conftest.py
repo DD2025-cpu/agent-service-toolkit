@@ -8,6 +8,13 @@ from langgraph.types import StateSnapshot
 from service import app
 
 
+@pytest.fixture(autouse=True)
+def isolate_local_auth_secret():
+    """Do not let a developer's ignored .env change service-test expectations."""
+    with patch("service.service.settings.AUTH_SECRET", None):
+        yield
+
+
 @pytest.fixture
 def test_client():
     """Fixture to create a FastAPI test client."""

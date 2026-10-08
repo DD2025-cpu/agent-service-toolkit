@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "model_name": "tuned_xgb",
+  "model_version": "2.0.0",
+  "created_at_utc": "2026-09-21T06:09:27.309538+00:00",
+  "model_type": "XGBRegressor",
+  "model_format": "xgboost_ubjson",
+  "model_file": "wind_irr_tuned_v2.ubj",
+  "model_sha256": "d0600736fe0a61897f961fd05bc91fd63d5ec34d01444f8f1006d932a43f4a4e",
+  "feature_columns": [
+    "capacity_mw",
+    "investment_million_cny",
+    "full_hours",
+    "tariff_cny_per_kwh",
+    "opex_ratio"
+  ],
+  "target_column": "irr",
+  "model_params": {
+    "objective": "reg:squarederror",
+    "base_score": null,
+    "booster": null,
+    "callbacks": null,
+    "colsample_bylevel": null,
+    "colsample_bynode": null,
+    "colsample_bytree": 1.0,
+    "device": null,
+    "early_stopping_rounds": null,
+    "enable_categorical": false,
+    "eval_metric": null,
+    "feature_types": null,
+    "feature_weights": null,
+    "gamma": null,
+    "grow_policy": null,
+    "importance_type": null,
+    "interaction_constraints": null,
+    "learning_rate": 0.08,
+    "max_bin": null,
+    "max_cat_threshold": null,
+    "max_cat_to_onehot": null,
+    "max_delta_step": null,
+    "max_depth": 3,
+    "max_leaves": null,
+    "min_child_weight": 5,
+    "missing": "NaN",
+    "monotone_constraints": null,
+    "multi_strategy": null,
+    "n_estimators": 300,
+    "n_jobs": null,
+    "num_parallel_tree": null,
+    "random_state": 42,
+    "reg_alpha": null,
+    "reg_lambda": null,
+    "sampling_method": null,
+    "scale_pos_weight": null,
+    "subsample": 1.0,
+    "tree_method": null,
+    "validate_parameters": null,
+    "verbosity": null
+  },
+  "training": {
+    "baseline_reference": "baseline-v1",
+    "economic_assumption_version": "cny-after-tax-v1",
+    "economic_assumptions": {
+      "currency": "CNY",
+      "vnd_per_cny": 3356.23,
+      "project_life_years": 20,
+      "discount_rate": 0.08,
+      "generation_degradation_rate": 0.005,
+      "tariff_escalation_rate": 0.0,
+      "opex_escalation_rate": 0.0,
+      "salvage_value_ratio": 0.05,
+      "corporate_income_tax_rate": 0.2,
+      "other_revenue_tax_rate": 0.0,
+      "avoided_emissions_ton_per_mwh": 0.5,
+      "depreciation_method": "straight_line_to_salvage"
+    },
+    "training_data_file": "vietnam_wind_projects_with_irr.csv",
+    "training_data_sha256": "9aaabe0c02156a49717b58aa2eaa5d6c753c176f1aa2c225ed126df07517c0ef",
+    "train_samples": 441,
+    "test_samples": 111,
+    "test_size": 0.2,
+    "random_state": 42,
+    "selection": "randomized_search_best_mean_validation_MAE",
+    "search_best_validation_MAE": 0.01410167696525301,
+    "metrics": {
+      "train": {
+        "MAE": 0.004726008975174199,
+        "RMSE": 0.007051833560594402,
+        "R2": 0.9914366975146307
+      },
+      "test": {
+        "MAE": 0.013230333415090266,
+        "RMSE": 0.022937640332717738,
+        "R2": 0.8750797022804178
+      }
+    },
+    "cross_validation_summary": {
+      "MAE": {
+        "mean": 0.01410167696525301,
+        "std": 0.0016548807225264057
+      },
+      "RMSE": {
+        "mean": 0.026242904451726546,
+        "std": 0.005164412741126703
+      },
+      "R2": {
+        "mean": 0.8593940980596996,
+        "std": 0.07289960451006115
+      }
+    }
+  },
+  "runtime_versions": {
+    "python": "3.10.19",
+    "xgboost": "3.1.2",
+    "scikit_learn": "1.7.2",
+    "pandas": "2.3.3",
+    "numpy": "2.2.6"
+  }
+}
